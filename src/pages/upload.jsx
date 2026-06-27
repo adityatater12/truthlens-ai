@@ -534,12 +534,11 @@ export default function Upload() {
       });
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/upload",
-        formData
-      );
+  "https://truthlens-backend-17gw.onrender.com/upload",
+  formData
+);
 
       console.log("BACKEND RESPONSE:", response.data);
-      console.log("Fraud:", response.data.fraud);
 
       setDocuments(response.data.documents);
 
@@ -579,14 +578,10 @@ navigate("/processing");
       console.error("DATA:", error.response?.data);
       console.error("MESSAGE:", error.message);
 
-     console.error(error);
-
-if (error.response) {
-    console.log(error.response.data);
-    alert(JSON.stringify(error.response.data, null, 2));
-} else {
-    alert(error.message);
-}
+      console.log(error);
+console.log(error.response);
+console.log(error.response?.data);
+alert(JSON.stringify(error.response?.data));
     }
   }}
   className="group rounded-2xl bg-sky-500 px-8 py-4 text-base font-semibold transition-all duration-300 hover:scale-105 hover:bg-sky-400"

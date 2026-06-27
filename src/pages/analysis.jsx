@@ -64,7 +64,7 @@ export default function Analysis() {
 
   <button
     onClick={() =>
-      window.location.href = "http://127.0.0.1:8000/report"
+      window.location.href = "https://truthlens-backend-17gw.onrender.com/report"
     }
     className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-3 font-semibold text-white transition hover:bg-sky-500"
   >
