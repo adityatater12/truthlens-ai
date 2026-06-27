@@ -14,9 +14,14 @@ from report_generator import generate_report
 
 app = FastAPI(title="TruthLens AI Backend")
 
+# =====================================================
+# CORS
+# =====================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://truthlens-ai-five.vercel.app",
         "http://localhost:5173",
         "http://localhost:5174",
     ],
@@ -28,7 +33,7 @@ app.add_middleware(
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Store latest investigation for report generation
+# Store latest investigation
 last_analysis = {}
 
 
@@ -87,19 +92,15 @@ async def upload(files: list[UploadFile] = File(...)):
         print("Detected:", doc_type)
         print(fields)
 
-        documents.append({
-
-            "filename": file.filename,
-
-            "documentType": doc_type,
-
-            "text": text,
-
-            "fields": fields,
-
-            "forensics": forensics,
-
-        })
+        documents.append(
+            {
+                "filename": file.filename,
+                "documentType": doc_type,
+                "text": text,
+                "fields": fields,
+                "forensics": forensics,
+            }
+        )
 
     # ------------------------------------
     # Merge Applicant
@@ -112,7 +113,6 @@ async def upload(files: list[UploadFile] = File(...)):
         for key, value in doc["fields"].items():
 
             if value and key not in applicant:
-
                 applicant[key] = value
 
     # ------------------------------------
@@ -128,7 +128,6 @@ async def upload(files: list[UploadFile] = File(...)):
         for key, value in doc["fields"].items():
 
             if key not in comparison:
-
                 comparison[key] = {}
 
             comparison[key][document_name] = value
@@ -144,15 +143,10 @@ async def upload(files: list[UploadFile] = File(...)):
     # ------------------------------------
 
     last_analysis = {
-
         "documents": documents,
-
         "applicant": applicant,
-
         "comparison": comparison,
-
         "fraud": fraud,
-
     }
 
     # ------------------------------------
@@ -160,17 +154,11 @@ async def upload(files: list[UploadFile] = File(...)):
     # ------------------------------------
 
     return {
-
         "success": True,
-
         "documents": documents,
-
         "applicant": applicant,
-
         "comparison": comparison,
-
         "fraud": fraud,
-
     }
 
 
@@ -178,21 +166,14 @@ async def upload(files: list[UploadFile] = File(...)):
 def download_report():
 
     if not last_analysis:
-
         return {
-
             "error": "No investigation available."
-
         }
 
     pdf_path = generate_report(last_analysis)
 
     return FileResponse(
-
         pdf_path,
-
         media_type="application/pdf",
-
         filename="TruthLens_Report.pdf",
-
     )
